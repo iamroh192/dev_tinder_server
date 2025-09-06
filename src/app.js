@@ -2,12 +2,6 @@ const express = require("express")
 
 const app = express()
 
-app.use("/abc",(req,res)=>{
-    res.send("erripuka")
-})
-app.use("/abcd",(req,res)=>{
-    res.send("erripuka2")
-})
 app.use((req,res)=>{
     res.send("hello")
 })
