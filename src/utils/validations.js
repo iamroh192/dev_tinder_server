@@ -15,4 +15,15 @@ const validations = (req)=>{
     }
 }
 
-module.exports = validations
+const validateEditFields = (req) => {
+  const notValidFields = ["emailId", "password", "gender", "age"];
+
+  const hasInvalidField = Object.keys(req.body).some((key) =>
+    notValidFields.includes(key)
+  );
+
+  return !hasInvalidField;
+};
+
+
+module.exports = {validations,validateEditFields}

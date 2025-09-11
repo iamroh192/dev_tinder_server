@@ -2,46 +2,18 @@ const express = require("express")
 
 const connectDB = require("./config/database.js");
 const User = require("./models/user.js")
-const validations = require("./utils/validations.js")
-const bcrypt = require("bcrypt")
 const app = express()
+const cookieParser = require('cookie-parser')
+const authRouter = require("./routes/auth.js")
+const requestRouter = require("./routes/request.js")
+const profileRouter = require("./routes/profile.js")
 
 app.use(express.json())
+app.use(cookieParser())
   
-app.post("/signup",async (req,res)=>{
-    try{
-        validations(req)
-        console.log("after validation")
-        const {firstName,lastName,emailId,password}=req.body
-        const hashPassword = await bcrypt.hash(password, 10);
-        console.log(hashPassword)
-        const user = new User({firstName,lastName,emailId,password:hashPassword})
-        await user.save()
-        res.send("data saved successfully")
-    } catch (err){
-        res.status(404).send(err)
-    }
-
-})
-
-app.post("/login",async (req,res)=>{
-    try{
-        const {emailId,password} = req.body
-        const user = await User.findOne({emailId})
-        if(!user){
-            res.status(404).send("invalid details")
-        } else{
-            const isValidPassword = await bcrypt.compare(password,user.password)
-            if(!isValidPassword){
-            res.status(404).send("invalid details")
-            } else {
-                res.status(200).send("Login Successfull")
-            }
-        }       
-    } catch (err){
-        res.status(404).send(err)
-    }
-})
+app.use("/",authRouter)
+app.use("/",requestRouter)
+app.use("/",profileRouter)
 
 app.get("/user", async (req,res)=>{
     const {emailId} = req.body
