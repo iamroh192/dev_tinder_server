@@ -27,8 +27,10 @@ profileRouter.patch("/profile/edit", authMiddleware,async (req,res)=>{
             throw new Error("update not allowed")
         }
         Object.keys(req.body).forEach((key)=>user[key]=req.body[key])
+        console.log(user)
+        console.log(req.body)
         await user.save()
-        res.send("user updated successfully")
+        res.json({message:"user updated successfully",data:user})
     } catch (err){
         res.status(404).send(err.message)
     }

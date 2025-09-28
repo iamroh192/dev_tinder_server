@@ -1,4 +1,5 @@
 const express = require("express")
+const cors = require("cors")
 
 const connectDB = require("./config/database.js");
 const User = require("./models/user.js")
@@ -8,6 +9,22 @@ const authRouter = require("./routes/auth.js")
 const requestRouter = require("./routes/request.js")
 const profileRouter = require("./routes/profile.js")
 const userRouter = require("./routes/user.js")
+
+// app.all("*", function(req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "http://localhost:5173");
+//     next();
+// })
+
+
+app.use(cors({
+  origin: "http://localhost:5173", 
+  credentials: true,           
+}));
+
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store');
+  next();
+});
 
 app.use(express.json())
 app.use(cookieParser())

@@ -3,6 +3,7 @@ const { authMiddleware } = require("../middlewares/authMiddleware")
 const userRouter = app.Router()
 const connectionRequest = require("../models/connectionRequestModel")
 const User = require("../models/user")
+const skills = require("../utils/skills.json")
 
 
 const populateUserData = ["firstName","lastName","age","gender","photoURL","about","skills"]
@@ -50,6 +51,7 @@ userRouter.get("/user/connections",authMiddleware, async(req,res)=>{
 
 userRouter.get("/feed",authMiddleware, async(req,res)=>{
     try{
+        console.log("You are in feed")
         const page = parseInt(req.query.page) || 1
         let limit = parseInt(req.query.limit) || 10
         limit>50?limit=50:limit
@@ -64,11 +66,19 @@ userRouter.get("/feed",authMiddleware, async(req,res)=>{
         const users = await User.find({$and:[{_id:{$nin:Array.from(hideUsers)}},{_id:{$ne:user._id}}]},populateUserData)
                         .skip(skip).limit(limit)
         // const data = await User.find({ _id: { $ne: user._id } },populateUserData)
-        res.status(200).json({message:"data received successfully",users})
+        res.status(200).json({message:"data received successfully",data:users})
     } catch(err){
         res.status(404).send(err.message)
     }
     
+})
+
+userRouter.get("/skills", async(req,res)=>{
+    try{
+        res.status(200).json({message:"data fetched successfully",data:skills})
+    } catch(err){
+        res.status(404).send(err.message)
+    }
 })
 
 module.exports = userRouter

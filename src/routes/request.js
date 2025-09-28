@@ -43,10 +43,12 @@ requestRouter.post("/review/:status/:requestId", authMiddleware,async(req,res)=>
     try{        
         const toUserId = req.user._id
         const status = req.params.status
-        const requestId = req.params.fromUserId
-        if(!status || !fromUserId){
+        const requestId = req.params.requestId
+        console.log(requestId)
+        if(!status || !requestId){
             throw new Error("invalid request")
         }
+        console.log("in review route")
         const allowedStatus = ["accepted","rejected"]
         if(!allowedStatus.includes(status)){
             throw new Error("invalid status")

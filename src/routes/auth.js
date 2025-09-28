@@ -12,14 +12,16 @@ const {validations} = require("../utils/validations.js")
 
 authRouter.post("/signup",async (req,res)=>{
     try{
+        console.log("in signup route",req.body)
         validations(req)
-        const {firstName,lastName,emailId,password}=req.body
+        console.log("after validations")
+        const {password}=req.body
         const hashPassword = await bcrypt.hash(password, 10);
-        const user = new User({firstName,lastName,emailId,password:hashPassword})
+        const user = new User({...req.body,password:hashPassword})
         await user.save()
         res.send("data saved successfully")
     } catch (err){
-        res.status(404).send(err)
+        res.status(404).send(err.message)
     }
 
 })
@@ -28,7 +30,9 @@ authRouter.post("/signup",async (req,res)=>{
 authRouter.post("/login",async (req,res)=>{
     try{
         const {emailId,password} = req.body
+        console.log(emailId,password)
         const user = await User.findOne({emailId})
+        console.log(user)
         if(!user){
             res.status(404).send("invalid details")
         } else{
@@ -36,9 +40,13 @@ authRouter.post("/login",async (req,res)=>{
             if(!isValidPassword){
             res.status(404).send("invalid details")
             } else {
+                const userObj = user.toObject();
+                delete userObj.password;
+                delete userObj.createdAt;
+                delete userObj.updatedAt;
                 const token = jwt.sign({ _id: user._id }, 'Dev@tinder123',{expiresIn:"1d"})
                 res.cookie("token",token)
-                res.status(200).send("Login Successfull")
+                res.json({message:"Login successfully",status:200,data:user})
             }
         }       
     } catch (err){
@@ -50,7 +58,7 @@ authRouter.post("/logout", async (req,res)=>{
     res.cookie("token",null,{
         expires:new Date(Date.now())
     })
-    res.send("logout successful")
+    res.send({message:"logout successful",status:200})
 })
 
 module.exports = authRouter

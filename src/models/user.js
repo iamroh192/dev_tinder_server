@@ -6,10 +6,12 @@ const validator = require('validator');
 const userSchema = new mongoose.Schema({
     firstName:{
         type:String,
-        required:true
+        required:true,
+        set: v => v.charAt(0).toUpperCase() + v.slice(1).toLowerCase()
     },
     lastName:{
-        type:String
+        type:String,
+        set: v => v.charAt(0).toUpperCase() + v.slice(1).toLowerCase()
     },
     emailId:{
         type:String,
@@ -49,11 +51,13 @@ const userSchema = new mongoose.Schema({
             } else {
                 return "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS08t3lZlT_JscMUhdU5tbWMj9vnLBm9K3yKA&s"
             }
-        }
+        },
+        set: v => v === "" ?  undefined : v
     },
     about:{
         type:String,
-        default:"This is default about"
+        default:"This is default about",
+        set: v => v === "" ? "This is default about" : v
     },
     skills:{
         type:[String]

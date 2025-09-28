@@ -2,17 +2,22 @@ const validator = require('validator');
 
 
 const validations = (req)=>{
-    console.log("in validation")
     const {firstName,emailId,password}=req.body
+    console.log("in validation")
     if(!firstName){
+        console.log("in firstName")
         throw new Error ("Invalid Name")
     }
     if(!validator.isEmail(emailId)){
+        console.log("in email")
         throw new Error ("Invalid Mail")
     }
     if(!validator.isStrongPassword(password)){
+        console.log("in password")
         throw new Error ("Password is weak")
     }
+    console.log("after validation")
+
 }
 
 const validateEditFields = (req) => {
