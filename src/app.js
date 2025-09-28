@@ -16,10 +16,7 @@ const userRouter = require("./routes/user.js")
 // })
 
 
-app.use(cors({
-  origin: "http://localhost:5173", 
-  credentials: true,           
-}));
+app.use(cors());
 
 app.use((req, res, next) => {
   res.set('Cache-Control', 'no-store');
