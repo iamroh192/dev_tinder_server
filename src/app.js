@@ -16,7 +16,13 @@ const userRouter = require("./routes/user.js")
 // })
 
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://52.62.59.253",  // your frontend origin
+    credentials: true,              // allow cookies / credentials
+  })
+);
+
 
 app.use((req, res, next) => {
   res.set('Cache-Control', 'no-store');
